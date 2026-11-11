@@ -1,7 +1,23 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["cle1"],
-  "buildCommand": "npm run build",
-  "outputDirectory": "frontend/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "services": {
+    "backend": {
+      "root": "backend",
+      "framework": "express",
+      "entrypoint": "src/server.ts",
+      "buildCommand": "npm run prisma:generate"
+    },
+    "frontend": {
+      "root": "frontend",
+      "framework": "vite",
+      "bindings": [
+        { "type": "service", "service": "backend", "format": "url", "env": "BACKEND_URL" }
+      ],
+      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "backend" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
+  ]
 }
