@@ -3,6 +3,7 @@ import path from "node:path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import type { Request } from "express";
 import helmet from "helmet";
 import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
@@ -64,8 +65,10 @@ export function createApp(): express.Express {
 
   // CORS: credentials enabled for cookies. Same-origin SPA requests (the
   // browser sends Origin on POSTs) are accepted by matching the request's
-  // own host, so a slightly wrong CLIENT_URL cannot lock out the admin.
-  // In development the common Vite dev/preview hosts are allowed too.
+  // own host — whether this service serves the SPA itself or the hosting
+  // platform's edge serves it — so a slightly wrong CLIENT_URL cannot lock
+  // out the admin. In development the common Vite dev/preview hosts are
+  // allowed too.
   const devOrigins = [
     env.clientUrl,
     "http://localhost:5173",
@@ -77,10 +80,9 @@ export function createApp(): express.Express {
     cors((req, callback) => {
       const origin = req.headers.origin;
       const sameOrigin =
-        servesSpa &&
         origin !== undefined &&
         req.headers.host !== undefined &&
-        origin === `https://${req.headers.host}`;
+        origin === `${(req as Request).protocol}://${req.headers.host}`;
       const allowed =
         origin === undefined ||
         sameOrigin ||
