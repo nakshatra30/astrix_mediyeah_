@@ -1,12 +1,35 @@
 import "dotenv/config";
 import express from "express";
 
-// TEMPORARY DIAGNOSTIC (DIAG-BOOT-v1): surface the real boot error instead of
-// Vercel's opaque FUNCTION_INVOCATION_FAILED. Reverts once the root cause is
-// fixed. The app graph is imported dynamically so a module-load failure
-// (env vars, prisma adapter, bcrypt bindings) is caught and reported.
+// TEMPORARY DIAGNOSTIC (DIAG-BOOT-v2): surface the real boot error instead of
+// Vercel's opaque FUNCTION_INVOCATION_FAILED, plus a presence report of the
+// expected environment variables (names only — values are never exposed).
+// Reverts once the root cause is fixed. The app graph is imported dynamically
+// so a module-load failure (env vars, prisma adapter, bcrypt bindings) is
+// caught and reported.
 
-const DIAG_MARKER = "DIAG-BOOT-v1";
+const DIAG_MARKER = "DIAG-BOOT-v2";
+
+const EXPECTED_ENV_VARS = [
+  "DATABASE_URL",
+  "SESSION_SECRET",
+  "CLIENT_URL",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
+  "NODE_ENV",
+  "PORT",
+] as const;
+
+function envPresenceReport(): string {
+  const lines = EXPECTED_ENV_VARS.map((name) => {
+    const value = process.env[name];
+    const state = value === undefined ? "MISSING" : value.trim() === "" ? "EMPTY" : "set";
+    return `  ${name}: ${state}`;
+  });
+  lines.push(`  (total process.env keys: ${Object.keys(process.env).length})`);
+  return lines.join("\n");
+}
 
 function bootPort(): number {
   const parsed = Number.parseInt(process.env.PORT ?? "5000", 10);
@@ -30,7 +53,12 @@ async function main(): Promise<void> {
     const diag = express();
     diag.disable("x-powered-by");
     diag.use((_req, res) => {
-      res.status(500).type("text/plain").send(`${DIAG_MARKER}\n\n${detail}`);
+      res
+        .status(500)
+        .type("text/plain")
+        .send(
+          `${DIAG_MARKER}\n\nEnvironment variables visible to this service (names only):\n${envPresenceReport()}\n\nBoot error:\n${detail}`,
+        );
     });
     app = diag;
   }
