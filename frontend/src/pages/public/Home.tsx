@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Globe2, MessageSquareQuote, Rocket, Smartphone } from "lucide-react";
 import { FlexCarousel, type FlexCarouselItem } from "../../components/carousel/FlexCarousel";
+import { MagicBento, type MagicBentoItem } from "../../components/bento/MagicBento";
 import { CtaBand } from "../../components/public/CtaBand";
 import { ProcessTimeline } from "../../components/public/ProcessTimeline";
 import { SectionHead } from "../../components/public/SectionHead";
-import { ServiceCard } from "../../components/public/ServiceCard";
+import { ServiceIcon } from "../../components/public/ServiceIcon";
 import { StatsStrip } from "../../components/public/StatsStrip";
 import { TestimonialCard } from "../../components/public/TestimonialCard";
 import { btnClasses } from "../../components/ui/Button";
@@ -16,6 +17,18 @@ import { DIVISION_META } from "../../utils/format";
 const FALLBACK_HERO_TITLE = "We build digital experiences that move people";
 const FALLBACK_HERO_SUB =
   "Astrix Media is a full-stack studio: web platforms, brand systems, and growth content — engineered end to end under one roof.";
+
+const BENTO_GLOW = "#754cff";
+const BENTO_LAYOUT: Record<string, { visual?: string; colSpan: number; rowSpan: number }> = {
+  "website-development": { visual: "collaboration", colSpan: 2, rowSpan: 2 },
+  "custom-web-applications": { visual: "automation", colSpan: 2, rowSpan: 2 },
+  "digital-marketing": { visual: "analytics", colSpan: 2, rowSpan: 1 },
+  "brand-identity-design": { visual: "dashboard", colSpan: 2, rowSpan: 1 },
+  "video-production": { visual: "integration", colSpan: 2, rowSpan: 1 },
+  "social-media-management": { visual: "integration", colSpan: 1, rowSpan: 2 },
+  photography: { colSpan: 2, rowSpan: 1 },
+};
+const BENTO_FALLBACK = { colSpan: 2, rowSpan: 1 };;
 
 export function Home() {
   const home = useHome();
@@ -58,6 +71,25 @@ export function Home() {
     ];
     return [...titles, ...titles];
   }, [home.data]);
+
+  const bentoItems = useMemo<MagicBentoItem[]>(
+    () =>
+      (home.data?.services.featured ?? []).slice(0, 6).map((service) => {
+        const layout = BENTO_LAYOUT[service.slug] ?? BENTO_FALLBACK;
+        return {
+          id: service.id,
+          title: service.title,
+          description: service.shortDescription ?? undefined,
+          label: DIVISION_META[service.division].short,
+          icon: <ServiceIcon iconKey={service.iconKey} size={16} />,
+          href: `/services/${service.slug}`,
+          visual: layout.visual,
+          colSpan: layout.colSpan,
+          rowSpan: layout.rowSpan,
+        };
+      }),
+    [home.data],
+  );
 
   if (home.isError) {
     return (
@@ -147,11 +179,15 @@ export function Home() {
           {home.isLoading ? (
             <LoadingState padded={false} />
           ) : (
-            <div className="services-grid">
-              {(home.data?.services.featured ?? []).slice(0, 6).map((service) => (
-                <ServiceCard service={service} key={service.id} />
-              ))}
-            </div>
+            <MagicBento
+              items={bentoItems}
+              columns={4}
+              rowHeight={200}
+              gap={12}
+              radius={20}
+              glowColor={BENTO_GLOW}
+              textAutoHide={false}
+            />
           )}
         </div>
       </section>
