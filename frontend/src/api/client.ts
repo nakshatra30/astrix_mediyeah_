@@ -6,10 +6,11 @@
 
 import type { Paginated } from "./types";
 
-/* In production the Express app serves the built SPA on one origin, so the
-   API is reached with a relative path. The Vite dev server talks to the local
-   backend directly. VITE_API_URL overrides either when set. */
-const fallbackApiUrl = import.meta.env.DEV ? "http://localhost:5000/api/v1" : "/api/v1";
+/* The API is always reached with a relative path: in production the
+   platform routes /api/* to the backend service, and in development the
+   Vite dev server proxies /api to the local backend (see vite.config.ts).
+   VITE_API_URL overrides either when set. */
+const fallbackApiUrl = "/api/v1";
 
 export const API_URL = import.meta.env.VITE_API_URL ?? fallbackApiUrl;
 
