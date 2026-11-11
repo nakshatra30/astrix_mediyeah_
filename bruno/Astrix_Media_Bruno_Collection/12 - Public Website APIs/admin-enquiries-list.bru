@@ -1,0 +1,41 @@
+meta {
+  name: Public Website - Verify Enquiry in Admin Dashboard
+  type: http
+  seq: 56
+}
+
+docs {
+  Workflow bridge: an enquiry submitted through the public website must be
+  visible to an authenticated admin. Run "01 Auth/login" and "02 Auth/auth-me"
+  first so the session cookie is in the jar, and "Submit Enquiry" (seq 54)
+  first so the enquiry exists.
+}
+
+get {
+  url: {{baseUrl}}/admin/enquiries?status=NEW&page=1&pageSize=10
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Admin enquiry list returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Newest NEW enquiries include the public website submission", function () {
+    const body = res.getBody();
+    expect(body.data).to.be.an("array");
+    expect(body.data.length).to.be.at.least(1);
+    const submitted = body.data.find((e) => e.email === "bruno.public-visitor@example.com");
+    expect(submitted).to.be.an("object");
+    expect(submitted.status).to.equal("NEW");
+    expect(submitted.preferredContactMethod).to.equal("WHATSAPP");
+  });
+}

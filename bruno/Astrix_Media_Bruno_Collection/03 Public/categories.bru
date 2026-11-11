@@ -22,3 +22,78 @@ tests {
     expect(body).to.have.property("data");
   });
 }
+
+example {
+  name: example
+  
+  request: {
+    url: {{baseUrl}}/categories?division=TECHNOLOGY
+    method: GET
+    mode: none
+    headers: {
+      Accept: application/json
+    }
+  }
+  
+  response: {
+    headers: {
+      content-security-policy: default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'
+      cross-origin-opener-policy: same-origin
+      cross-origin-resource-policy: cross-origin
+      origin-agent-cluster: ?1
+      referrer-policy: no-referrer
+      x-content-type-options: nosniff
+      x-dns-prefetch-control: off
+      x-download-options: noopen
+      x-frame-options: SAMEORIGIN
+      x-permitted-cross-domain-policies: none
+      x-xss-protection: 0
+      vary: Origin
+      access-control-allow-credentials: true
+      x-request-id: 68b6f0b8-c1d5-4ed9-9ee1-89aea0a701e2
+      ratelimit-policy: 300;w=60
+      ratelimit: limit=300, remaining=297, reset=45
+      content-type: application/json; charset=utf-8
+      content-length: 415
+      etag: W/"19f-WAxRBCAbRMiBBYihKZYGwE+nRx4"
+      date: Wed, 11 Nov 2026 10:06:00 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "data": [
+            {
+              "id": "4f5eea29-fb7b-4d60-b058-b7b1d83e4179",
+              "name": "Bruno Demo Technology",
+              "slug": "bruno-demo-technology",
+              "division": "TECHNOLOGY",
+              "description": "[TEST DATA] Seeded portfolio category for Bruno collection runs.",
+              "displayOrder": 1,
+              "isActive": true,
+              "createdAt": "2026-11-11T08:37:18.659Z",
+              "updatedAt": "2026-11-11T08:37:18.659Z",
+              "_count": {
+                "projects": 1
+              }
+            }
+          ],
+          "meta": {
+            "page": 1,
+            "pageSize": 10,
+            "total": 1,
+            "totalPages": 1
+          }
+        }
+      '''
+    }
+  }
+}

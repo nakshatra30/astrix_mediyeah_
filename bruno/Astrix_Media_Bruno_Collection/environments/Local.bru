@@ -1,41 +1,33 @@
 vars {
   @description('Base URL including the API version prefix')
   baseUrl: http://localhost:5000/api/v1
-
   @description('Administrator email created by the backend seed script')
-  adminEmail: admin@astrixmedia.in
-
+  adminEmail: astrix.mediyeah@gmail.com
   @description('CSRF token is captured after running Auth - Me')
   csrfToken: REPLACE_AFTER_AUTH_ME
-
   @description('Project ID is captured after Create Project')
   projectId: REPLACE_AFTER_CREATE
-
   @description('Project slug is captured after Create Project')
   projectSlug: REPLACE_AFTER_CREATE
-
   @description('Category ID is captured after Create Category')
   categoryId: REPLACE_AFTER_CREATE
-
   @description('Service ID is captured after Create Service')
   serviceId: REPLACE_AFTER_CREATE
-
   @description('Existing published project slug for the public project detail request')
   publishedProjectSlug: astrix-bruno-demo-project
-
   @description('Existing active service slug for the public service detail request')
   serviceSlug: website-development
-
+  @description('Existing category slug for the public project category filter')
+  categorySlug: bruno-demo-technology
+  @description('Existing DRAFT (unpublished) project slug for the negative project detail request')
+  draftProjectSlug: astrix-bruno-draft-project
   @description('Testimonial ID is captured after Create Testimonial')
   testimonialId: REPLACE_AFTER_CREATE
-
   @description('Enquiry ID is captured after Submit Enquiry')
   enquiryId: REPLACE_AFTER_SUBMIT
-
   @description('Media asset ID is captured after Upload Media')
   mediaAssetId: REPLACE_AFTER_UPLOAD
 }
-
 vars:secret [
   adminPassword,
   currentPassword,

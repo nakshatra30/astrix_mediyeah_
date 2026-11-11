@@ -1,0 +1,55 @@
+meta {
+  name: Public Website - Submit Enquiry
+  type: http
+  seq: 54
+}
+
+post {
+  url: {{baseUrl}}/public/enquiries
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Bruno Public Visitor",
+    "email": "bruno.public-visitor@example.com",
+    "phone": "+919876543210",
+    "company": "Bruno Test Company",
+    "serviceId": null,
+    "serviceNameSnapshot": "Website Development",
+    "budgetRange": "50000-100000",
+    "preferredContactMethod": "WHATSAPP",
+    "projectDescription": "I found your portfolio through the public website and would like a quote for a business website.",
+    "privacyConsent": true,
+    "sourcePage": "/public-bruno-tests"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("enquiryId", body.data.id);
+  }
+}
+
+tests {
+  test("Submit enquiry returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Created enquiry has NEW status and id captured", function () {
+    const data = res.getBody().data;
+    expect(data.status).to.equal("NEW");
+    expect(data.id).to.be.a("string");
+    expect(bru.getVar("enquiryId")).to.equal(data.id);
+  });
+}

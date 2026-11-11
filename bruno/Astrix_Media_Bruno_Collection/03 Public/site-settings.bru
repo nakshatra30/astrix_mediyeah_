@@ -22,3 +22,63 @@ tests {
     expect(body).to.have.property("data");
   });
 }
+
+example {
+  name: 200
+  
+  request: {
+    url: {{baseUrl}}/site-settings
+    method: GET
+    mode: none
+    headers: {
+      Accept: application/json
+    }
+  }
+  
+  response: {
+    headers: {
+      content-security-policy: default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'
+      cross-origin-opener-policy: same-origin
+      cross-origin-resource-policy: cross-origin
+      origin-agent-cluster: ?1
+      referrer-policy: no-referrer
+      x-content-type-options: nosniff
+      x-dns-prefetch-control: off
+      x-download-options: noopen
+      x-frame-options: SAMEORIGIN
+      x-permitted-cross-domain-policies: none
+      x-xss-protection: 0
+      vary: Origin
+      access-control-allow-credentials: true
+      x-request-id: 2d47b0c9-139a-4c84-913a-9ba5a2f45841
+      ratelimit-policy: 300;w=60
+      ratelimit: limit=300, remaining=299, reset=60
+      content-type: application/json; charset=utf-8
+      content-length: 229
+      etag: W/"e5-5UhGElSFmkke8QKLU7LbMlYX+No"
+      date: Wed, 11 Nov 2026 10:03:27 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "id": "singleton",
+            "tagline": "[TEST DATA] Astrix Media — technology and creative studio.",
+            "seoTitle": "Astrix Media",
+            "seoDescription": "[TEST DATA] Portfolio site for Astrix Media.",
+            "updatedAt": "2026-11-11T08:37:23.127Z"
+          }
+        }
+      '''
+    }
+  }
+}

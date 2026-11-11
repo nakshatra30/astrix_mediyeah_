@@ -49,6 +49,17 @@ export async function publicListProjects(req: Request, res: Response): Promise<v
   const where = {
     status: "PUBLISHED" as const,
     ...(query.division !== undefined ? { division: query.division } : {}),
+    ...(query.featured !== undefined ? { isFeatured: query.featured === "true" } : {}),
+    ...(query.category !== undefined ? { category: { slug: query.category } } : {}),
+    ...(query.search !== undefined
+      ? {
+          OR: [
+            { title: { contains: query.search, mode: "insensitive" as const } },
+            { shortDescription: { contains: query.search, mode: "insensitive" as const } },
+            { technologies: { has: query.search } },
+          ],
+        }
+      : {}),
   };
   const [total, projects] = await prisma.$transaction([
     prisma.project.count({ where }),

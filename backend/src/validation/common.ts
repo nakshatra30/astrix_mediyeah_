@@ -31,3 +31,14 @@ export const httpUrlSchema = z
   .refine((value) => value.startsWith("http://") || value.startsWith("https://"), {
     message: "URL must use http or https",
   });
+
+/** International phone numbers: digits and + ( ) - . spaces only. */
+export const phoneSchema = z
+  .string()
+  .trim()
+  .min(5)
+  .max(30)
+  .regex(/^[+()\-.\s\d]+$/, "Phone must contain only digits and + ( ) - . spaces");
+
+/** How an enquiry visitor prefers to be contacted (optional). */
+export const preferredContactMethodSchema = z.enum(["EMAIL", "PHONE", "WHATSAPP"]);

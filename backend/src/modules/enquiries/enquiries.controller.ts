@@ -25,6 +25,7 @@ function normalize(payload: CreateEnquiryPayload) {
     serviceId: payload.serviceId ?? null,
     serviceNameSnapshot: sanitizePlainText(payload.serviceNameSnapshot),
     budgetRange: sanitizePlainText(payload.budgetRange),
+    preferredContactMethod: payload.preferredContactMethod ?? null,
     projectDescription: sanitizeRichText(payload.projectDescription) ?? "",
     privacyConsent: payload.privacyConsent,
     sourcePage: sanitizePlainText(payload.sourcePage),

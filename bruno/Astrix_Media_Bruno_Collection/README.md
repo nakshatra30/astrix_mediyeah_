@@ -33,6 +33,7 @@ For each resource, use the folder's requests in this order:
 - **Enquiries:** Submit (public) -> Admin List -> Admin Get -> Update Status -> Add Note. Enquiries are archived/status-managed; no hard-delete route is specified.
 - **Settings:** Admin Get -> Admin Patch. Settings are a singleton, so no create/delete operations are defined.
 - **Media:** Upload -> List -> Delete (only when no project/testimonial references the asset).
+- **Public website (`12 Public Website APIs`):** run the folder in seq order; every request is self-contained (no login) except `Verify Enquiry in Admin Dashboard`, which needs a prior `Auth / Login` + `Auth / Me` and `Submit Enquiry`. `categorySlug` (`bruno-demo-technology`) and `draftProjectSlug` (`astrix-bruno-draft-project`) reference records created by the backend dev seed.
 
 Create requests capture IDs into runtime variables (`projectId`, `categoryId`, etc.) when the response follows `{ "data": { "id": ... } }`. If your backend response shape differs, copy the returned UUID into the matching Local environment variable.
 
@@ -55,6 +56,7 @@ Create requests capture IDs into runtime variables (`projectId`, `categoryId`, e
 - Enquiry deletion is intentionally not provided in this contract; retain, close or archive enquiries instead.
 - `DELETE /admin/media/:id` should be rejected when the media asset is still referenced.
 - The upload request uses `assets/sample-upload.png`. Replace it with any permitted image if your backend applies different file constraints.
+- If the backend idles against a scale-to-zero database (Neon free tier), the first request after a pause can fail with a transient 500; re-run it once the compute has warmed.
 
 ## Before testing
 

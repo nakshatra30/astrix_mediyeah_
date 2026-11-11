@@ -66,22 +66,85 @@ async function main(): Promise<void> {
     },
   });
 
-  await prisma.siteSettings.upsert({
-    where: { id: "singleton" },
+  const creativeService = await prisma.service.upsert({
+    where: { slug: "digital-marketing" },
     update: {},
     create: {
-      id: "singleton",
-      tagline: `${TEST_DATA_TAG} Astrix Media — technology and creative studio.`,
-      seoTitle: "Astrix Media",
-      seoDescription: `${TEST_DATA_TAG} Portfolio site for Astrix Media.`,
+      title: "Digital Marketing",
+      slug: "digital-marketing",
+      division: "CREATIVE",
+      shortDescription: `${TEST_DATA_TAG} Digital marketing campaigns and growth services.`,
+      description: `${TEST_DATA_TAG} Strategy, campaign management and reporting for digital marketing.`,
+      deliverables: ["Strategy document", "Campaign setup", "Monthly reporting"],
+      iconKey: "megaphone",
+      displayOrder: 2,
+      isActive: true,
     },
+  });
+
+  await prisma.project.upsert({
+    where: { slug: "astrix-bruno-draft-project" },
+    update: {},
+    create: {
+      title: "Astrix Bruno Draft Project",
+      slug: "astrix-bruno-draft-project",
+      division: "TECHNOLOGY",
+      shortDescription: `${TEST_DATA_TAG} An unpublished DRAFT project — must never appear publicly.`,
+      fullDescription: `${TEST_DATA_TAG} <p>Draft fixture proving unpublished content stays private.</p>`,
+      technologies: ["TypeScript"],
+      isFeatured: false,
+      status: "DRAFT",
+    },
+  });
+
+  const existingTestimonial = await prisma.testimonial.findFirst({ where: { clientName: "Bruno Demo Client" } });
+  const testimonial =
+    existingTestimonial ??
+    (await prisma.testimonial.create({
+      data: {
+        clientName: "Bruno Demo Client",
+        designation: "Founder",
+        companyName: "Demo Business",
+        quote: `${TEST_DATA_TAG} Astrix Media delivered our website ahead of schedule.`,
+        rating: 5,
+        isPublished: true,
+        displayOrder: 1,
+      },
+    }));
+
+  // Dev-only values for the public homepage; refresh on every seed run.
+  const settingsValues = {
+    agencyName: "Astrix Media",
+    tagline: `${TEST_DATA_TAG} Astrix Media — technology and creative studio.`,
+    heroTitle: "We build brands and websites that grow businesses",
+    heroSubtitle: `${TEST_DATA_TAG} Digital marketing and technology solutions under one roof.`,
+    aboutIntro: `${TEST_DATA_TAG} Astrix Media is a technology and creative studio delivering websites, applications and digital marketing.`,
+    contactEmail: "astrix.mediyeah@gmail.com",
+    contactPhone: "+919876543210",
+    whatsappNumber: "+919876543210",
+    address: `${TEST_DATA_TAG} Kochi, Kerala, India`,
+    socialInstagram: "https://instagram.com/astrixmedia",
+    socialLinkedIn: "https://linkedin.com/company/astrixmedia",
+    socialX: "https://x.com/astrixmedia",
+    socialFacebook: "https://facebook.com/astrixmedia",
+    socialYoutube: "https://youtube.com/@astrixmedia",
+    footerText: `${TEST_DATA_TAG} (c) Astrix Media. All rights reserved.`,
+    seoTitle: "Astrix Media",
+    seoDescription: `${TEST_DATA_TAG} Portfolio site for Astrix Media.`,
+  };
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: settingsValues,
+    create: { id: "singleton", ...settingsValues },
   });
 
   console.log("Seed complete:");
   console.log(`  category: ${category.name} (${category.id})`);
-  console.log(`  service:  ${service.title} (${service.id})`);
-  console.log(`  project:  ${project.title} (${project.id}) [${project.status}]`);
-  console.log(`  settings: singleton row ensured`);
+  console.log(`  services: ${service.title} (${service.id}), ${creativeService.title} (${creativeService.id})`);
+  console.log(`  projects: ${project.title} (${project.id}) [${project.status}]`);
+  console.log(`  testimonial: ${testimonial.clientName} (${testimonial.id}) [published]`);
+  console.log("  settings: singleton row ensured with public website fields");
   console.log("\nNo admin users were created — run `npm run admin:create` to add one.");
 }
 

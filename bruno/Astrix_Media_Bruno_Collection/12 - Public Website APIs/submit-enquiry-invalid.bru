@@ -1,0 +1,42 @@
+meta {
+  name: Public Website - Submit Enquiry Invalid Data
+  type: http
+  seq: 55
+}
+
+docs {
+  Negative test: invalid enquiry payload must be rejected with 400 VALIDATION_ERROR.
+}
+
+post {
+  url: {{baseUrl}}/public/enquiries
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "A",
+    "email": "not-an-email",
+    "phone": "call-me",
+    "projectDescription": "too short",
+    "privacyConsent": false,
+    "preferredContactMethod": "FAX"
+  }
+}
+
+tests {
+  test("Invalid enquiry returns HTTP 400", function () {
+    expect(res.getStatus()).to.equal(400);
+    const body = res.getBody();
+    expect(body).to.have.property("error");
+    expect(body.error.code).to.equal("VALIDATION_ERROR");
+    expect(body.error.details).to.be.an("array");
+    expect(body.error.details.length).to.be.at.least(1);
+  });
+}

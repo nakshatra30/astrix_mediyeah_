@@ -1,0 +1,32 @@
+meta {
+  name: Public Website - Get Project by Slug
+  type: http
+  seq: 50
+}
+
+get {
+  url: {{baseUrl}}/public/projects/{{publishedProjectSlug}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Get project by slug returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Project detail is published with gallery and technologies", function () {
+    const data = res.getBody().data;
+    expect(data.slug).to.equal(bru.getEnvVar("publishedProjectSlug"));
+    expect(data.status).to.equal("PUBLISHED");
+    expect(data.images).to.be.an("array");
+    expect(data.technologies).to.be.an("array");
+  });
+}

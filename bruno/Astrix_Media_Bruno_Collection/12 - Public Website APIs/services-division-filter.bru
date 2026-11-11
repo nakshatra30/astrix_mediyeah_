@@ -1,0 +1,29 @@
+meta {
+  name: Public Website - Filter Services by Division
+  type: http
+  seq: 43
+}
+
+get {
+  url: {{baseUrl}}/public/services?division=CREATIVE&page=1&pageSize=10
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Division filter returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Division filter returns only CREATIVE services", function () {
+    const body = res.getBody();
+    expect(body.data).to.be.an("array");
+    for (const service of body.data) {
+      expect(service.division).to.equal("CREATIVE");
+    }
+  });
+}

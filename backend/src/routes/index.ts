@@ -8,6 +8,7 @@ import { adminProjectsRouter, publicProjectsRouter } from "../modules/projects/p
 import { adminServicesRouter, publicServicesRouter } from "../modules/services/services.routes.js";
 import { adminSettingsRouter, publicSettingsRouter } from "../modules/settings/settings.routes.js";
 import { adminTestimonialsRouter, publicTestimonialsRouter } from "../modules/testimonials/testimonials.routes.js";
+import { publicWebsiteRouter } from "../modules/public/public.routes.js";
 
 export const apiRouter = Router();
 
@@ -30,6 +31,8 @@ apiRouter.use("/admin/enquiries", adminEnquiriesRouter);
 
 apiRouter.use("/site-settings", publicSettingsRouter);
 apiRouter.use("/admin/site-settings", adminSettingsRouter);
+
+apiRouter.use("/public", publicWebsiteRouter);
 
 apiRouter.use("/auth", adminAuthRouter);
 apiRouter.use("/admin/media", adminMediaRouter);

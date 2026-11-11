@@ -1,0 +1,42 @@
+meta {
+  name: Public Website - Get Homepage Content
+  type: http
+  seq: 41
+}
+
+get {
+  url: {{baseUrl}}/public/home
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Homepage content returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Homepage content contains all sections", function () {
+    const data = res.getBody().data;
+    for (const section of ["agency", "hero", "about", "services", "projects", "testimonials", "contact", "social", "seo"]) {
+      expect(data).to.have.property(section);
+    }
+    expect(data.services.featured).to.be.an("array");
+    expect(data.projects.featured).to.be.an("array");
+    expect(data.testimonials.approved).to.be.an("array");
+  });
+
+  test("Homepage only surfaces published featured projects", function () {
+    const projects = res.getBody().data.projects.featured;
+    for (const project of projects) {
+      expect(project.status).to.equal("PUBLISHED");
+      expect(project.isFeatured).to.equal(true);
+    }
+  });
+}

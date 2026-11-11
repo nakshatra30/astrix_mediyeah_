@@ -68,8 +68,8 @@ async function main(): Promise<void> {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
   const name = (await rl.question("Admin name [Astrix Admin]: ")).trim() || "Astrix Admin";
-  const emailInput = (await rl.question("Admin email [admin@astrixmedia.in]: ")).trim().toLowerCase();
-  const email = emailInput === "" ? "admin@astrixmedia.in" : emailInput;
+  const emailInput = (await rl.question("Admin email [astrix.mediyeah@gmail.com]: ")).trim().toLowerCase();
+  const email = emailInput === "" ? "astrix.mediyeah@gmail.com" : emailInput;
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     console.error(`"${email}" is not a valid email address.`);

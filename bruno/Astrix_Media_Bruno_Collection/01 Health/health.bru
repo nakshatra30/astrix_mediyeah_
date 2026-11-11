@@ -13,3 +13,63 @@ get {
 headers {
   Accept: application/json
 }
+
+example {
+  name: 200 success
+  
+  request: {
+    url: {{baseUrl}}/health
+    method: GET
+    mode: none
+    headers: {
+      Accept: application/json
+    }
+  }
+  
+  response: {
+    headers: {
+      content-security-policy: default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'
+      cross-origin-opener-policy: same-origin
+      cross-origin-resource-policy: cross-origin
+      origin-agent-cluster: ?1
+      referrer-policy: no-referrer
+      x-content-type-options: nosniff
+      x-dns-prefetch-control: off
+      x-download-options: noopen
+      x-frame-options: SAMEORIGIN
+      x-permitted-cross-domain-policies: none
+      x-xss-protection: 0
+      vary: Origin
+      access-control-allow-credentials: true
+      x-request-id: d67ae261-1fa5-433a-93af-52a76e448b76
+      ratelimit-policy: 300;w=60
+      ratelimit: limit=300, remaining=299, reset=60
+      content-type: application/json; charset=utf-8
+      content-length: 121
+      etag: W/"79-P8RYlDbgGMMY1uIEullIDUDUu2Q"
+      date: Wed, 11 Nov 2026 09:55:57 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "status": "ok",
+            "service": "astrix-media-api",
+            "version": "1.0.0",
+            "database": "up",
+            "time": "2026-11-11T09:55:57.995Z"
+          }
+        }
+      '''
+    }
+  }
+}

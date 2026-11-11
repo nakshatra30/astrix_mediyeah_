@@ -1,0 +1,27 @@
+meta {
+  name: Public Website - Search Projects
+  type: http
+  seq: 48
+}
+
+get {
+  url: {{baseUrl}}/public/projects?search=demo&page=1&pageSize=10
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Project search returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Project search finds matching projects", function () {
+    const body = res.getBody();
+    expect(body.data).to.be.an("array");
+    expect(body.meta.total).to.be.at.least(1);
+  });
+}

@@ -37,11 +37,18 @@ export type ProjectPayload = z.infer<typeof projectPayloadSchema>;
 export const projectUpdateSchema = projectBase.partial();
 export type ProjectUpdatePayload = z.infer<typeof projectUpdateSchema>;
 
-export const publicProjectQuerySchema = paginationSchema.extend({
+const projectListQueryBase = paginationSchema.extend({
   division: divisionSchema.optional(),
   sort: z.enum(["newest", "oldest"]).default("newest"),
 });
 
-export const adminProjectQuerySchema = publicProjectQuerySchema.extend({
+/** Public portfolio listing — search, category slug and featured filters. */
+export const publicProjectQuerySchema = projectListQueryBase.extend({
+  search: z.string().trim().min(1).max(120).optional(),
+  category: slugSchema.optional(),
+  featured: z.enum(["true", "false"]).optional(),
+});
+
+export const adminProjectQuerySchema = projectListQueryBase.extend({
   status: projectStatusSchema.optional(),
 });

@@ -1,0 +1,28 @@
+meta {
+  name: Public Website - Get Project by Slug Unpublished
+  type: http
+  seq: 51
+}
+
+docs {
+  Negative test: the seeded DRAFT project must never be served by the public API.
+}
+
+get {
+  url: {{baseUrl}}/public/projects/{{draftProjectSlug}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Unpublished project slug returns HTTP 404", function () {
+    expect(res.getStatus()).to.equal(404);
+    const body = res.getBody();
+    expect(body).to.have.property("error");
+    expect(body.error.code).to.equal("NOT_FOUND");
+  });
+}

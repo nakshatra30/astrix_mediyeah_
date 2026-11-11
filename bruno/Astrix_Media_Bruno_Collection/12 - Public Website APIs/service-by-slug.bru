@@ -1,0 +1,31 @@
+meta {
+  name: Public Website - Get Service by Slug
+  type: http
+  seq: 44
+}
+
+get {
+  url: {{baseUrl}}/public/services/{{serviceSlug}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Get service by slug returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Service detail matches the requested slug and is active", function () {
+    const data = res.getBody().data;
+    expect(data.slug).to.equal(bru.getEnvVar("serviceSlug"));
+    expect(data.isActive).to.equal(true);
+    expect(data.deliverables).to.be.an("array");
+  });
+}

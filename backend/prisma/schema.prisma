@@ -169,6 +169,7 @@ model Enquiry {
   serviceId          String?       @db.Uuid
   serviceNameSnapshot String?
   budgetRange        String?
+  preferredContactMethod String?
   projectDescription String
   privacyConsent     Boolean       @default(false)
   status             EnquiryStatus @default(NEW)
@@ -217,7 +218,21 @@ model MediaAsset {
 
 model SiteSettings {
   id             String   @id @default("singleton")
+  agencyName     String?
   tagline        String?
+  heroTitle      String?
+  heroSubtitle   String?
+  aboutIntro     String?
+  contactEmail   String?
+  contactPhone   String?
+  whatsappNumber String?
+  address        String?
+  socialInstagram String?
+  socialLinkedIn  String?
+  socialX         String?
+  socialFacebook  String?
+  socialYoutube   String?
+  footerText     String?
   seoTitle       String?
   seoDescription String?
   updatedAt      DateTime @updatedAt @db.Timestamptz(3)

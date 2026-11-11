@@ -1,22 +1,17 @@
 import { z } from "zod";
-import { enquiryStatusSchema } from "../../validation/common.js";
+import { enquiryStatusSchema, phoneSchema, preferredContactMethodSchema } from "../../validation/common.js";
 import { paginationSchema } from "../../utils/pagination.js";
 
 /** Public contact form — the only unauthenticated write endpoint. */
 export const createEnquirySchema = z.strictObject({
   name: z.string().trim().min(2).max(120),
   email: z.email().max(254).transform((value) => value.trim().toLowerCase()),
-  phone: z
-    .string()
-    .trim()
-    .min(5)
-    .max(30)
-    .regex(/^[+()\-.\s\d]+$/, "Phone must contain only digits and + ( ) - . spaces")
-    .nullish(),
+  phone: phoneSchema.nullish(),
   company: z.string().max(160).nullish(),
   serviceId: z.uuid().nullish(),
   serviceNameSnapshot: z.string().max(200).nullish(),
   budgetRange: z.string().max(100).nullish(),
+  preferredContactMethod: preferredContactMethodSchema.nullish(),
   projectDescription: z.string().min(10).max(5000),
   privacyConsent: z.boolean().refine((value) => value === true, {
     message: "privacyConsent must be true to submit an enquiry",

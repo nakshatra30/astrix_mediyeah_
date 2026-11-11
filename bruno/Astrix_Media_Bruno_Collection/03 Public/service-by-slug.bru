@@ -22,3 +22,78 @@ tests {
     expect(body).to.have.property("data");
   });
 }
+
+example {
+  name: example
+  
+  request: {
+    url: {{baseUrl}}/services/{{serviceSlug}}
+    method: GET
+    mode: none
+    headers: {
+      Accept: application/json
+    }
+  }
+  
+  response: {
+    headers: {
+      content-security-policy: default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'
+      cross-origin-opener-policy: same-origin
+      cross-origin-resource-policy: cross-origin
+      origin-agent-cluster: ?1
+      referrer-policy: no-referrer
+      x-content-type-options: nosniff
+      x-dns-prefetch-control: off
+      x-download-options: noopen
+      x-frame-options: SAMEORIGIN
+      x-permitted-cross-domain-policies: none
+      x-xss-protection: 0
+      vary: Origin
+      access-control-allow-credentials: true
+      x-request-id: ced1f43c-a6e7-41e9-a174-79af40c701ca
+      ratelimit-policy: 300;w=60
+      ratelimit: limit=300, remaining=297, reset=22
+      content-type: application/json; charset=utf-8
+      content-length: 552
+      etag: W/"228-BD1mnaxdVeUId1aqyHr0G4JGlyY"
+      date: Wed, 11 Nov 2026 10:05:13 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "id": "90972bd5-2adb-408b-9e4e-1befcf724f2c",
+            "title": "Website Development",
+            "slug": "website-development",
+            "division": "TECHNOLOGY",
+            "shortDescription": "[TEST DATA] Full-stack website development service.",
+            "description": "[TEST DATA] Design, build, and launch of production websites and web applications.",
+            "deliverables": [
+              "Discovery workshop",
+              "Design system",
+              "Responsive build",
+              "Launch support"
+            ],
+            "iconKey": "code",
+            "displayOrder": 1,
+            "isActive": true,
+            "createdAt": "2026-11-11T08:37:20.118Z",
+            "updatedAt": "2026-11-11T08:37:20.118Z",
+            "_count": {
+              "enquiries": 0
+            }
+          }
+        }
+      '''
+    }
+  }
+}

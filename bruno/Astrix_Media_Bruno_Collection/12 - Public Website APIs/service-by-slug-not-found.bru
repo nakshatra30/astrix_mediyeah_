@@ -1,0 +1,24 @@
+meta {
+  name: Public Website - Get Service by Slug Not Found
+  type: http
+  seq: 45
+}
+
+get {
+  url: {{baseUrl}}/public/services/nonexistent-service-slug
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Unknown service slug returns HTTP 404", function () {
+    expect(res.getStatus()).to.equal(404);
+    const body = res.getBody();
+    expect(body).to.have.property("error");
+    expect(body.error.code).to.equal("NOT_FOUND");
+  });
+}

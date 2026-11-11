@@ -1,0 +1,30 @@
+meta {
+  name: Public Website - Filter Projects by Category
+  type: http
+  seq: 47
+}
+
+get {
+  url: {{baseUrl}}/public/projects?category={{categorySlug}}&page=1&pageSize=10
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Category filter returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Category filter returns projects in that category only", function () {
+    const body = res.getBody();
+    expect(body.data).to.be.an("array");
+    expect(body.meta.total).to.be.at.least(1);
+    for (const project of body.data) {
+      expect(project.category.slug).to.equal(bru.getEnvVar("categorySlug"));
+    }
+  });
+}

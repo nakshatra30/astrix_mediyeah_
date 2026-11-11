@@ -30,3 +30,71 @@ tests {
     expect(body).to.have.property("data");
   });
 }
+
+example {
+  name: 200
+  
+  request: {
+    url: {{baseUrl}}/auth/login
+    method: POST
+    mode: json
+    headers: {
+      Accept: application/json
+      Content-Type: application/json
+    }
+  
+    body:json: {
+      {
+        "email": "{{adminEmail}}",
+        "password": "{{adminPassword}}"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      content-security-policy: default-src 'none';frame-ancestors 'none';base-uri 'none';form-action 'none'
+      cross-origin-opener-policy: same-origin
+      cross-origin-resource-policy: cross-origin
+      origin-agent-cluster: ?1
+      referrer-policy: no-referrer
+      x-content-type-options: nosniff
+      x-dns-prefetch-control: off
+      x-download-options: noopen
+      x-frame-options: SAMEORIGIN
+      x-permitted-cross-domain-policies: none
+      x-xss-protection: 0
+      vary: Origin
+      access-control-allow-credentials: true
+      x-request-id: b5eba689-61c4-45be-a9f4-93be114b7ff7
+      ratelimit-policy: 10;w=900
+      ratelimit: limit=10, remaining=8, reset=618
+      set-cookie: astrix.sid=335de1007203787863af4436b75d20348aece20b28ae315d9c7e3cbc53c2f1bb; Path=/; Expires=Wed, 11 Nov 2026 18:01:07 GMT; HttpOnly; SameSite=Lax
+      content-type: application/json; charset=utf-8
+      content-length: 153
+      etag: W/"99-JpScO1/FOoK93v7oQLZ9HAgTOh4"
+      date: Wed, 11 Nov 2026 10:01:08 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "id": "0e2bd935-996c-4a9a-909e-9dc8d8ee1551",
+            "name": "Astrix Admin",
+            "email": "astrix.mediyeah@gmail.com",
+            "lastLoginAt": "2026-11-11T10:01:07.315Z"
+          }
+        }
+      '''
+    }
+  }
+}

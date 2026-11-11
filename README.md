@@ -124,8 +124,22 @@ Base URL: `/api/v1`. All list endpoints accept `page` and `pageSize` (max 50) an
 | `GET /services?division` | Active services only. |
 | `GET /services/:slug` | One active service. |
 | `GET /testimonials?page&pageSize` | Published testimonials only. |
-| `GET /site-settings` | Public site settings (nulls until configured). |
-| `POST /enquiries` | Submit a contact enquiry (rate-limited, consent required). |
+| `GET /site-settings` | Public site settings (agency, contact, social, SEO; nulls until configured). |
+| `POST /enquiries` | Submit a contact enquiry (rate-limited, consent required, optional `preferredContactMethod`). |
+
+### Public website (`/public`)
+
+Unauthenticated routes for the marketing site. The unprefixed routes above remain valid aliases; these add the homepage aggregate and portfolio search.
+
+| Method & Path | Purpose |
+| --- | --- |
+| `GET /public/home` | Aggregated homepage payload: agency, hero, about, featured services & projects (≤6 each), approved testimonials, contact info, social links, SEO. |
+| `GET /public/services?division` · `GET /public/services/:slug` | Active services (alias of `/services`). |
+| `GET /public/projects?search&category&featured&division&sort` | Published projects; `search` matches title/short description, `category` is a category slug, `featured=true\|false`. |
+| `GET /public/projects/:slug` | One published project with gallery (alias of `/projects/:slug`). |
+| `GET /public/testimonials` | Published testimonials (alias). |
+| `GET /public/site-settings` | Public business info (alias). |
+| `POST /public/enquiries` | Enquiry submission (alias; shares the same rate limiter as `POST /enquiries`). |
 
 ### Auth (session cookie + CSRF)
 
@@ -174,6 +188,8 @@ The collection lives at `bruno/Astrix_Media_Bruno_Collection/`.
 2. Set the `adminPassword` secret to your admin's password (created via `npm run admin:create`).
 3. Run the requests **in folder order** — captures chain: Login → Me (captures `csrfToken`) → Create Category/Service/Project/Testimonial (capture IDs) → Submit Enquiry → Upload Media. `publishedProjectSlug` (`astrix-bruno-demo-project`) and `serviceSlug` (`website-development`) reference seeded records created by `npm run db:seed:dev`.
 4. `11 Negative Tests` verifies 401 on unauthenticated admin access.
+5. `12 Public Website APIs` is self-contained (no login needed) except `Verify Enquiry in Admin Dashboard` (seq 56), which needs a prior Login + Me and `Submit Enquiry` (seq 54). `categorySlug` (`bruno-demo-technology`) and `draftProjectSlug` (`astrix-bruno-draft-project`) reference seeded records.
+6. If the database scales to zero when idle (Neon free tier), the first request after a pause can return a transient 500 — re-run it once the compute has warmed.
 
 ## Security model
 
@@ -194,7 +210,7 @@ cd backend
 npm test
 ```
 
-Integration tests run against `TEST_DATABASE_URL` (migrations are applied automatically by the suite's global setup). The suite covers auth/session/CSRF flows, all CRUD endpoints, public visibility rules, soft-delete semantics, upload validation, XSS sanitization, security headers, CORS, and rate limiting. Rate-limit tests run in an isolated worker so limiter state cannot leak between files.
+Integration tests run against `TEST_DATABASE_URL` (migrations are applied automatically by the suite's global setup). The suite covers auth/session/CSRF flows, all CRUD endpoints, public visibility rules, soft-delete semantics, upload validation, XSS sanitization, security headers, CORS, and rate limiting. `public-website.test.ts` covers the `/public/*` routes: the home aggregate, search/category/featured filters, draft/inactive hiding, enquiry validation, and the admin-bridge workflows (public submission visible in the admin dashboard, status updates, publishing). Rate-limit tests run in an isolated worker so limiter state cannot leak between files.
 
 ## Project structure
 

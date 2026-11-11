@@ -1,0 +1,32 @@
+meta {
+  name: Public Website - Get Site Settings
+  type: http
+  seq: 53
+}
+
+get {
+  url: {{baseUrl}}/public/site-settings
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Site settings returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+
+  test("Site settings exposes business information only", function () {
+    const data = res.getBody().data;
+    for (const field of ["agencyName", "tagline", "heroTitle", "heroSubtitle", "aboutIntro", "contactEmail", "contactPhone", "whatsappNumber", "socialInstagram", "seoTitle"]) {
+      expect(data).to.have.property(field);
+    }
+    expect(JSON.stringify(data)).to.not.contain("password");
+  });
+}
