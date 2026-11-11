@@ -1,0 +1,24 @@
+meta {
+  name: Public - Get Project by Slug
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/projects/{{publishedProjectSlug}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Public - Get Project by Slug returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

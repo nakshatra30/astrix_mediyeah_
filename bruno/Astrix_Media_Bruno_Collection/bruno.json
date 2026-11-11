@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "Astrix Media API",
+  "type": "collection",
+  "defaultEnvironment": "Local",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

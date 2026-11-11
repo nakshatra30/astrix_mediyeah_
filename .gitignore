@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment & secrets — never commit these
+.env
+.env.local
+.env.*.local
+secrets.json
+*.pem
+*.key
+
+# Runtime uploads (user-generated content)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Prisma generated client (regenerate with: npm run prisma:generate)
+backend/src/generated/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

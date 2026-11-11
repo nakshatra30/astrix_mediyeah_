@@ -1,0 +1,34 @@
+meta {
+  name: Testimonials - Update
+  type: http
+  seq: 29
+}
+
+patch {
+  url: {{baseUrl}}/admin/testimonials/{{testimonialId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "quote": "Updated testimonial feedback for Bruno CRUD testing.",
+    "rating": 4,
+    "isPublished": false
+  }
+}
+
+tests {
+  test("Testimonials - Update returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

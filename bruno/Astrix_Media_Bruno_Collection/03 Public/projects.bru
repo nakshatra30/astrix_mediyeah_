@@ -1,0 +1,24 @@
+meta {
+  name: Public - List Published Projects
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/projects?page=1&pageSize=12&division=TECHNOLOGY
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Public - List Published Projects returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

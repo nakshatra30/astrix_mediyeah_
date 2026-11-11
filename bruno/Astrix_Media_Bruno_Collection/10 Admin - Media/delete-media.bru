@@ -1,0 +1,25 @@
+meta {
+  name: Media - Delete Unreferenced Asset
+  type: http
+  seq: 39
+}
+
+delete {
+  url: {{baseUrl}}/admin/media/{{mediaAssetId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+tests {
+  test("Media - Delete Unreferenced Asset returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

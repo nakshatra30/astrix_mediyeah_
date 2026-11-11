@@ -1,0 +1,24 @@
+meta {
+  name: Public - Get Site Settings
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/site-settings
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Public - Get Site Settings returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

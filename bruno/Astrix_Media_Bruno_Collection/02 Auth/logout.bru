@@ -1,0 +1,22 @@
+meta {
+  name: Auth - Logout
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/logout
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+tests {
+  test("Auth - Logout returns HTTP 204", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

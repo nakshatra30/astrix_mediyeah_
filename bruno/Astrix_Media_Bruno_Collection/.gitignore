@@ -1,0 +1,6 @@
+# Do not commit local environment secrets
+.env
+.env.*
+!*.example
+node_modules/
+.DS_Store

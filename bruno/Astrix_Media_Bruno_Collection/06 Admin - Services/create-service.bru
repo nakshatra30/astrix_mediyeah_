@@ -1,0 +1,51 @@
+meta {
+  name: Services - Create
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{baseUrl}}/admin/services
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "title": "Bruno Test Service",
+    "slug": "bruno-test-service",
+    "division": "TECHNOLOGY",
+    "shortDescription": "A sample service for API testing.",
+    "description": "Full service description for CRUD testing.",
+    "deliverables": [
+      "Discovery",
+      "Design",
+      "Development"
+    ],
+    "iconKey": "code",
+    "displayOrder": 99,
+    "isActive": true
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("serviceId", body.data.id);
+  }
+}
+
+tests {
+  test("Services - Create returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Public - List Categories
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/categories?division=TECHNOLOGY
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Public - List Categories returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

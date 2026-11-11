@@ -1,0 +1,24 @@
+meta {
+  name: Negative - Protected API without Session
+  type: http
+  seq: 40
+}
+
+get {
+  url: {{baseUrl}}/admin/projects?page=1&pageSize=5
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Negative - Protected API without Session returns HTTP 401", function () {
+    expect(res.getStatus()).to.equal(401);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("error");
+  });
+}

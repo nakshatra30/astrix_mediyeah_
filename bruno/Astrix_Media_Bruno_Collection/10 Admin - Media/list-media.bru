@@ -1,0 +1,24 @@
+meta {
+  name: Media - List
+  type: http
+  seq: 37
+}
+
+get {
+  url: {{baseUrl}}/admin/media?page=1&pageSize=20
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Media - List returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

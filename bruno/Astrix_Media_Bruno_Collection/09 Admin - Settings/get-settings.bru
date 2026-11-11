@@ -1,0 +1,24 @@
+meta {
+  name: Settings - Get
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{baseUrl}}/admin/site-settings
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Settings - Get returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

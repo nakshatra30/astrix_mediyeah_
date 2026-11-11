@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & secrets — never commit these
+.env
+.env.local
+.env.*.local
+
+# Runtime uploads (user-generated content)
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Prisma generated client (regenerate with: npm run prisma:generate)
+src/generated/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

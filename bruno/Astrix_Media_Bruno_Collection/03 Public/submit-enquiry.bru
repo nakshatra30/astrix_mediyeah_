@@ -1,0 +1,47 @@
+meta {
+  name: Public - Submit Enquiry
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/enquiries
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Bruno Test Client",
+    "email": "bruno.test@example.com",
+    "phone": "+919876543210",
+    "company": "Example Business",
+    "serviceId": null,
+    "serviceNameSnapshot": "Website Development",
+    "budgetRange": "50000-100000",
+    "projectDescription": "We need a responsive company website and portfolio.",
+    "privacyConsent": true,
+    "sourcePage": "/contact"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("enquiryId", body.data.id);
+  }
+}
+
+tests {
+  test("Public - Submit Enquiry returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

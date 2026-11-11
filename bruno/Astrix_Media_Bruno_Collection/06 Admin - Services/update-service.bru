@@ -1,0 +1,34 @@
+meta {
+  name: Services - Update
+  type: http
+  seq: 25
+}
+
+patch {
+  url: {{baseUrl}}/admin/services/{{serviceId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "title": "Bruno Test Service Updated",
+    "shortDescription": "Updated service summary.",
+    "isActive": true
+  }
+}
+
+tests {
+  test("Services - Update returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

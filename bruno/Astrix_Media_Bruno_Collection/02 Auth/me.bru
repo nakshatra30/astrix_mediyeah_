@@ -1,0 +1,31 @@
+meta {
+  name: Auth - Me
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/me
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.csrfToken) bru.setVar("csrfToken", body.data.csrfToken);
+  }
+}
+
+tests {
+  test("Auth - Me returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

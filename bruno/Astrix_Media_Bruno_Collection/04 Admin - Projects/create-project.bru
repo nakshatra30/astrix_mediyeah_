@@ -1,0 +1,57 @@
+meta {
+  name: Projects - Create
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/admin/projects
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "title": "Bruno Test Project",
+    "slug": "bruno-test-project",
+    "division": "TECHNOLOGY",
+    "categoryId": null,
+    "shortDescription": "A sample project created while testing the API.",
+    "fullDescription": "Full project description for Bruno CRUD testing.",
+    "challenge": "The business needed a modern digital experience.",
+    "solution": "A responsive web platform.",
+    "process": "Discovery, design, development and QA.",
+    "technologies": [
+      "React",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "projectUrl": "https://example.com",
+    "repositoryUrl": null,
+    "isFeatured": false,
+    "status": "DRAFT"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("projectId", body.data.id);
+    if (body.data.slug) bru.setVar("projectSlug", body.data.slug);
+  }
+}
+
+tests {
+  test("Projects - Create returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

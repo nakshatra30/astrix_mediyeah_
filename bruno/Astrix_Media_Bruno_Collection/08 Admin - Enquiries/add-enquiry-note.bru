@@ -1,0 +1,32 @@
+meta {
+  name: Enquiries - Add Internal Note
+  type: http
+  seq: 34
+}
+
+post {
+  url: {{baseUrl}}/admin/enquiries/{{enquiryId}}/notes
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "body": "Bruno test note: contacted client for more details."
+  }
+}
+
+tests {
+  test("Enquiries - Add Internal Note returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

@@ -1,0 +1,34 @@
+meta {
+  name: Categories - Update
+  type: http
+  seq: 21
+}
+
+patch {
+  url: {{baseUrl}}/admin/categories/{{categoryId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "name": "Bruno Test Category Updated",
+    "description": "Updated category description.",
+    "displayOrder": 100
+  }
+}
+
+tests {
+  test("Categories - Update returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

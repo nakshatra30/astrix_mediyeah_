@@ -1,0 +1,45 @@
+meta {
+  name: Testimonials - Create
+  type: http
+  seq: 28
+}
+
+post {
+  url: {{baseUrl}}/admin/testimonials
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "clientName": "Bruno Test Client",
+    "designation": "Founder",
+    "companyName": "Example Company",
+    "quote": "The team delivered a thoughtful digital experience.",
+    "rating": 5,
+    "isPublished": false,
+    "displayOrder": 99
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("testimonialId", body.data.id);
+  }
+}
+
+tests {
+  test("Testimonials - Create returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

@@ -1,0 +1,34 @@
+meta {
+  name: Settings - Update
+  type: http
+  seq: 36
+}
+
+patch {
+  url: {{baseUrl}}/admin/site-settings
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "tagline": "Digital Solutions. Creative Growth.",
+    "seoTitle": "Astrix Media | Digital Solutions & Creative Growth",
+    "seoDescription": "Technology and creative services for growing businesses."
+  }
+}
+
+tests {
+  test("Settings - Update returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

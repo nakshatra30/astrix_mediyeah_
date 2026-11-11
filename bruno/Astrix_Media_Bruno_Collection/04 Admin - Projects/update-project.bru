@@ -1,0 +1,34 @@
+meta {
+  name: Projects - Update
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/admin/projects/{{projectId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "title": "Bruno Test Project Updated",
+    "shortDescription": "Updated description from Bruno.",
+    "isFeatured": true
+  }
+}
+
+tests {
+  test("Projects - Update returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

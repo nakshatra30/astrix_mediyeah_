@@ -1,0 +1,24 @@
+meta {
+  name: Public - List Testimonials
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/testimonials?page=1&pageSize=12
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Public - List Testimonials returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

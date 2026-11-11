@@ -1,0 +1,36 @@
+meta {
+  name: Media - Upload Sample PNG
+  type: http
+  seq: 38
+}
+
+post {
+  url: {{baseUrl}}/admin/media
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  X-CSRF-Token: {{csrfToken}}
+}
+
+body:multipart-form {
+  file: @file(assets/sample-upload.png)
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.data) {
+    if (body.data.id) bru.setVar("mediaAssetId", body.data.id);
+  }
+}
+
+tests {
+  test("Media - Upload Sample PNG returns HTTP 201", function () {
+    expect(res.getStatus()).to.equal(201);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}

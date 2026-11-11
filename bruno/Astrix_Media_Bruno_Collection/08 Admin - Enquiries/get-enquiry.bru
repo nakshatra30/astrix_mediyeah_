@@ -1,0 +1,24 @@
+meta {
+  name: Enquiries - Get by ID
+  type: http
+  seq: 32
+}
+
+get {
+  url: {{baseUrl}}/admin/enquiries/{{enquiryId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("Enquiries - Get by ID returns HTTP 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body).to.be.an("object");
+    expect(body).to.have.property("data");
+  });
+}
