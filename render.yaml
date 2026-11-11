@@ -1,0 +1,42 @@
+# Render blueprint — one web service serving the API and the built React
+# site on a single origin (https://astrix-mediyeah.onrender.com).
+#
+# Values you are prompted for during blueprint setup:
+#   DATABASE_URL  — Neon Postgres connection string (postgresql://...)
+#   CLIENT_URL     — https://astrix-mediyeah.onrender.com
+#   PUBLIC_BASE_URL — same as CLIENT_URL (optional; local-media fallback only)
+#   CLOUDINARY_*  — optional; empty = local-disk media (ephemeral on free tier)
+services:
+  - type: web
+    name: astrix-mediyeah
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: cd backend && npm ci && npm run build && cd ../frontend && npm ci && npm run build
+    startCommand: cd backend && npx prisma migrate deploy && node dist/server.js
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false
+        defaultValue: https://astrix-mediyeah.onrender.com
+      - key: PUBLIC_BASE_URL
+        sync: false
+        defaultValue: https://astrix-mediyeah.onrender.com
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+        defaultValue: ""
+      - key: CLOUDINARY_API_KEY
+        sync: false
+        defaultValue: ""
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+        defaultValue: ""

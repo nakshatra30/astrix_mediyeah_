@@ -1,7 +1,8 @@
 /**
  * Development seed data for the Bruno collection flow.
  * - Idempotent: everything is upserted by a stable slug/key.
- * - Marked with "[TEST DATA]" so it is easy to identify.
+ * - Create-only: existing rows are never overwritten, so edits made in the
+ *   admin panel survive re-seeding.
  * - NEVER creates admin users (use `npm run admin:create`).
  * - Refuses to run with NODE_ENV=production.
  */
@@ -13,137 +14,135 @@ if (env.isProduction) {
   process.exit(1);
 }
 
-const TEST_DATA_TAG = "[TEST DATA]";
-
 async function main(): Promise<void> {
-  const category = await prisma.category.upsert({
-    where: { slug: "bruno-demo-technology" },
-    update: {},
-    create: {
-      name: "Bruno Demo Technology",
-      slug: "bruno-demo-technology",
-      division: "TECHNOLOGY",
-      description: `${TEST_DATA_TAG} Seeded portfolio category for Bruno collection runs.`,
-      displayOrder: 1,
-      isActive: true,
-    },
-  });
+  const categories = await Promise.all(
+    [
+      { name: "Web & Apps", slug: "web-apps", division: "TECHNOLOGY" as const, description: "Websites, portals and applications.", displayOrder: 1 },
+      { name: "E-Commerce", slug: "e-commerce", division: "TECHNOLOGY" as const, description: "Online stores and commerce integrations.", displayOrder: 2 },
+      { name: "Branding & Design", slug: "branding-design", division: "CREATIVE" as const, description: "Identity systems and visual design.", displayOrder: 3 },
+      { name: "Film & Photo", slug: "film-photo", division: "CREATIVE" as const, description: "Video production and photography.", displayOrder: 4 },
+    ].map((data) =>
+      prisma.category.upsert({
+        where: { slug: data.slug },
+        update: {},
+        create: { ...data, isActive: true },
+      }),
+    ),
+  );
 
-  const service = await prisma.service.upsert({
-    where: { slug: "website-development" },
-    update: {},
-    create: {
-      title: "Website Development",
-      slug: "website-development",
-      division: "TECHNOLOGY",
-      shortDescription: `${TEST_DATA_TAG} Full-stack website development service.`,
-      description: `${TEST_DATA_TAG} Design, build, and launch of production websites and web applications.`,
-      deliverables: ["Discovery workshop", "Design system", "Responsive build", "Launch support"],
-      iconKey: "code",
-      displayOrder: 1,
-      isActive: true,
-    },
-  });
-
-  const project = await prisma.project.upsert({
-    where: { slug: "astrix-bruno-demo-project" },
-    update: {},
-    create: {
-      title: "Astrix Bruno Demo Project",
-      slug: "astrix-bruno-demo-project",
-      division: "TECHNOLOGY",
-      categoryId: category.id,
-      shortDescription: `${TEST_DATA_TAG} A published demo project referenced by the Bruno collection.`,
-      fullDescription: `${TEST_DATA_TAG} <p>This project exists so the Bruno collection has a stable, published record to fetch and mutate.</p>`,
-      challenge: `${TEST_DATA_TAG} <p>Provide a deterministic fixture for API testing.</p>`,
-      solution: `${TEST_DATA_TAG} <p>Seed an idempotent, published project.</p>`,
-      process: `${TEST_DATA_TAG} <p>Upsert by slug on every seed run.</p>`,
-      technologies: ["TypeScript", "Express", "PostgreSQL"],
-      projectUrl: "https://example.com",
-      repositoryUrl: "https://github.com/example/repo",
-      isFeatured: true,
-      status: "PUBLISHED",
-    },
-  });
-
-  const creativeService = await prisma.service.upsert({
-    where: { slug: "digital-marketing" },
-    update: {},
-    create: {
-      title: "Digital Marketing",
-      slug: "digital-marketing",
-      division: "CREATIVE",
-      shortDescription: `${TEST_DATA_TAG} Digital marketing campaigns and growth services.`,
-      description: `${TEST_DATA_TAG} Strategy, campaign management and reporting for digital marketing.`,
-      deliverables: ["Strategy document", "Campaign setup", "Monthly reporting"],
-      iconKey: "megaphone",
-      displayOrder: 2,
-      isActive: true,
-    },
-  });
-
-  await prisma.project.upsert({
-    where: { slug: "astrix-bruno-draft-project" },
-    update: {},
-    create: {
-      title: "Astrix Bruno Draft Project",
-      slug: "astrix-bruno-draft-project",
-      division: "TECHNOLOGY",
-      shortDescription: `${TEST_DATA_TAG} An unpublished DRAFT project — must never appear publicly.`,
-      fullDescription: `${TEST_DATA_TAG} <p>Draft fixture proving unpublished content stays private.</p>`,
-      technologies: ["TypeScript"],
-      isFeatured: false,
-      status: "DRAFT",
-    },
-  });
-
-  const existingTestimonial = await prisma.testimonial.findFirst({ where: { clientName: "Bruno Demo Client" } });
-  const testimonial =
-    existingTestimonial ??
-    (await prisma.testimonial.create({
-      data: {
-        clientName: "Bruno Demo Client",
-        designation: "Founder",
-        companyName: "Demo Business",
-        quote: `${TEST_DATA_TAG} Astrix Media delivered our website ahead of schedule.`,
-        rating: 5,
-        isPublished: true,
+  const services = await Promise.all(
+    [
+      {
+        title: "Website Development",
+        slug: "website-development",
+        division: "TECHNOLOGY" as const,
+        shortDescription: "Full stack website development service.",
+        description: "Design, build, and launch of production websites and web applications.",
+        deliverables: ["Discovery workshop", "Design system", "Responsive build", "Launch support"],
+        iconKey: "code",
         displayOrder: 1,
       },
-    }));
+      {
+        title: "Custom Web Applications",
+        slug: "custom-web-applications",
+        division: "TECHNOLOGY" as const,
+        shortDescription: "Bespoke portals, dashboards and SaaS products built to spec.",
+        description: "Full-cycle application development — architecture, build, testing and deployment of production web software.",
+        deliverables: ["Technical spec", "UI build", "API layer", "Deployment pipeline"],
+        iconKey: "layers",
+        displayOrder: 2,
+      },
+      {
+        title: "Digital Marketing",
+        slug: "digital-marketing",
+        division: "CREATIVE" as const,
+        shortDescription: "Digital marketing campaigns and growth services.",
+        description: "Strategy, campaign management and reporting for digital marketing.",
+        deliverables: ["Strategy document", "Campaign setup", "Monthly reporting"],
+        iconKey: "megaphone",
+        displayOrder: 3,
+      },
+      {
+        title: "Brand Identity Design",
+        slug: "brand-identity-design",
+        division: "CREATIVE" as const,
+        shortDescription: "Logos, identity systems and brand guidelines.",
+        description: "Naming support, logo systems, typography, colour and usage guidelines that scale across touchpoints.",
+        deliverables: ["Logo suite", "Brand guidelines", "Stationery set", "Social kit"],
+        iconKey: "palette",
+        displayOrder: 4,
+      },
+      {
+        title: "Video Production",
+        slug: "video-production",
+        division: "CREATIVE" as const,
+        shortDescription: "Brand films, promos and product videos end to end.",
+        description: "Scripting, shooting, motion graphics, editing and colour for brand and product films.",
+        deliverables: ["Creative script", "Shoot day", "Motion graphics", "Final cut + subtitles"],
+        iconKey: "video",
+        displayOrder: 5,
+      },
+      {
+        title: "Photography",
+        slug: "photography",
+        division: "CREATIVE" as const,
+        shortDescription: "Product, people and place photography for brand use.",
+        description: "Planned shoots with art direction, retouching and a licensed, organised library.",
+        deliverables: ["Shot list", "On-location shoot", "Retouched set", "Licensed library"],
+        iconKey: "camera",
+        displayOrder: 6,
+      },
+      {
+        title: "Social Media Management",
+        slug: "social-media-management",
+        division: "CREATIVE" as const,
+        shortDescription: "Always-on content, community and calendar management.",
+        description: "Content calendars, community management and monthly performance reviews across platforms.",
+        deliverables: ["Content calendar", "Monthly creatives", "Community replies", "Performance report"],
+        iconKey: "share",
+        displayOrder: 7,
+      },
+    ].map((data) =>
+      prisma.service.upsert({
+        where: { slug: data.slug },
+        update: {},
+        create: { ...data, isActive: true },
+      }),
+    ),
+  );
 
-  // Dev-only values for the public homepage; refresh on every seed run.
+  // Create-only: never overwrites settings edited in the admin panel.
   const settingsValues = {
-    agencyName: "Astrix Media",
-    tagline: `${TEST_DATA_TAG} Astrix Media — technology and creative studio.`,
+    agencyName: "Astrix Mediyeah",
+    tagline: "Astrix Mediyeah — technology and creative studio.",
     heroTitle: "We build brands and websites that grow businesses",
-    heroSubtitle: `${TEST_DATA_TAG} Digital marketing and technology solutions under one roof.`,
-    aboutIntro: `${TEST_DATA_TAG} Astrix Media is a technology and creative studio delivering websites, applications and digital marketing.`,
+    heroSubtitle: "Digital marketing and technology solutions under one roof.",
+    aboutIntro: "Astrix Mediyeah is a technology and creative studio delivering websites, applications and digital marketing.",
     contactEmail: "astrix.mediyeah@gmail.com",
     contactPhone: "+919876543210",
     whatsappNumber: "+919876543210",
-    address: `${TEST_DATA_TAG} Kochi, Kerala, India`,
+    address: "Coimbatore, Tamil Nadu",
     socialInstagram: "https://instagram.com/astrixmedia",
     socialLinkedIn: "https://linkedin.com/company/astrixmedia",
     socialX: "https://x.com/astrixmedia",
     socialFacebook: "https://facebook.com/astrixmedia",
     socialYoutube: "https://youtube.com/@astrixmedia",
-    footerText: `${TEST_DATA_TAG} (c) Astrix Media. All rights reserved.`,
-    seoTitle: "Astrix Media",
-    seoDescription: `${TEST_DATA_TAG} Portfolio site for Astrix Media.`,
+    footerText: "Astrix Mediyeah. All rights reserved.",
+    seoTitle: "Astrix Mediyeah",
+    seoDescription: "Portfolio site for Astrix Mediyeah.",
   };
 
   await prisma.siteSettings.upsert({
     where: { id: "singleton" },
-    update: settingsValues,
+    update: {},
     create: { id: "singleton", ...settingsValues },
   });
 
   console.log("Seed complete:");
-  console.log(`  category: ${category.name} (${category.id})`);
-  console.log(`  services: ${service.title} (${service.id}), ${creativeService.title} (${creativeService.id})`);
-  console.log(`  projects: ${project.title} (${project.id}) [${project.status}]`);
-  console.log(`  testimonial: ${testimonial.clientName} (${testimonial.id}) [published]`);
+  console.log(`  categories: ${categories.map((c) => c.name).join(", ")}`);
+  console.log(`  services: ${services.map((s) => s.title).join(", ")}`);
+  console.log("  projects: none (the Projects section starts empty)");
+  console.log("  testimonials: none (the Testimonials section starts empty)");
   console.log("  settings: singleton row ensured with public website fields");
   console.log("\nNo admin users were created — run `npm run admin:create` to add one.");
 }

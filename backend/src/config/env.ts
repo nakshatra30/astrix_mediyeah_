@@ -47,6 +47,10 @@ export const env = {
 export function publicBaseUrl(): string {
   const configured = process.env.PUBLIC_BASE_URL?.trim() ?? "";
   if (configured !== "") return configured.replace(/\/+$/, "");
+  // Production serves the SPA from this service, so the client URL is the
+  // public base (matters only for the local-disk media fallback; Cloudinary
+  // URLs are absolute already).
+  if (env.isProduction) return env.clientUrl.replace(/\/+$/, "");
   return `http://localhost:${env.port}`;
 }
 
