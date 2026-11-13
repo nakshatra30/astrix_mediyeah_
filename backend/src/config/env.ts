@@ -35,7 +35,7 @@ export const env = {
   sessionCookieName: optionalEnv("SESSION_COOKIE_NAME", "astrix.sid"),
   sessionTtlHours: parsePositiveInt("SESSION_TTL_HOURS", "8"),
   bcryptRounds: parsePositiveInt("BCRYPT_ROUNDS", "12"),
-  clientUrl: optionalEnv("CLIENT_URL", "http://localhost:5173"),
+  clientUrl: optionalEnv("CLIENT_URL", "http://localhost:5173").replace(/\/+$/, ""),
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME?.trim() || "",
     apiKey: process.env.CLOUDINARY_API_KEY?.trim() || "",

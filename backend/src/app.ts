@@ -79,13 +79,24 @@ export function createApp(): express.Express {
   app.use(
     cors((req, callback) => {
       const origin = req.headers.origin;
+      const rawXForwardedHost = req.headers["x-forwarded-host"];
+      const forwardedHost = typeof rawXForwardedHost === "string" ? rawXForwardedHost.split(",")[0]?.trim() : undefined;
+      const host = forwardedHost || req.headers.host;
+      const rawXForwardedProto = req.headers["x-forwarded-proto"];
+      const forwardedProto = typeof rawXForwardedProto === "string" ? rawXForwardedProto.split(",")[0]?.trim() : undefined;
+      const proto = forwardedProto || (req as Request).protocol;
       const sameOrigin =
         origin !== undefined &&
-        req.headers.host !== undefined &&
-        origin === `${(req as Request).protocol}://${req.headers.host}`;
+        host !== undefined &&
+        (origin === `${proto}://${host}` || origin === `https://${host}` || origin === `http://${host}`);
+      const isPlatformOrigin =
+        origin !== undefined &&
+        (/^https:\/\/([a-zA-Z0-9-]+\.)?vercel\.app$/.test(origin) ||
+          /^https:\/\/([a-zA-Z0-9-]+\.)?onrender\.com$/.test(origin));
       const allowed =
         origin === undefined ||
         sameOrigin ||
+        isPlatformOrigin ||
         (env.isProduction ? origin === env.clientUrl : devOrigins.includes(origin));
       callback(null, {
         origin: allowed,

@@ -16,10 +16,13 @@ export function parsePagination(query: Record<string, unknown>): Pagination {
 }
 
 export function computeMeta(pagination: Pagination, total: number) {
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pagination.pageSize);
   return {
     page: pagination.page,
     pageSize: pagination.pageSize,
     total,
-    totalPages: total === 0 ? 0 : Math.ceil(total / pagination.pageSize),
+    totalPages,
+    hasNextPage: pagination.page < totalPages,
+    hasPreviousPage: pagination.page > 1,
   };
 }
